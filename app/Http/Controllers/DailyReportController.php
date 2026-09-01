@@ -9,11 +9,55 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class DailyReportController extends Controller
 {
-    // 1. Menampilkan semua data laporan di halaman utama AO (Index)
+    // 1. Menampilkan semua data laporan di halaman utama AO (Index) dengan Folder Sektor
     public function index()
     {
         $reports = DailyReport::latest()->get();
-        return view('reports.index', compact('reports'));
+
+        $sectors = [
+            'Konsumer' => [
+                'name' => 'Konsumer',
+                'icon' => 'bi-bag-check-fill',
+                'emoji' => '🛍️',
+                'color' => '#fd7e14',
+                'bg' => 'rgba(253, 126, 20, 0.12)',
+                'border' => '#fd7e14'
+            ],
+            'Ritel' => [
+                'name' => 'Ritel',
+                'icon' => 'bi-buildings-fill',
+                'emoji' => '🏙️',
+                'color' => '#0dcaf0',
+                'bg' => 'rgba(13, 202, 240, 0.12)',
+                'border' => '#0dcaf0'
+            ],
+            'Digi' => [
+                'name' => 'Digi',
+                'icon' => 'bi-phone-fill',
+                'emoji' => '📱',
+                'color' => '#6f42c1',
+                'bg' => 'rgba(111, 66, 193, 0.12)',
+                'border' => '#6f42c1'
+            ],
+            'Tabungan' => [
+                'name' => 'Tabungan',
+                'icon' => 'bi-piggy-bank-fill',
+                'emoji' => '💰',
+                'color' => '#198754',
+                'bg' => 'rgba(25, 135, 84, 0.12)',
+                'border' => '#198754'
+            ],
+            'ATM' => [
+                'name' => 'ATM',
+                'icon' => 'bi-credit-card-2-front-fill',
+                'emoji' => '🏧',
+                'color' => '#0056a3',
+                'bg' => 'rgba(0, 86, 163, 0.12)',
+                'border' => '#0056a3'
+            ],
+        ];
+            
+        return view('reports.index', compact('reports', 'sectors'));
     }
 
     // 2. Menampilkan form tambah laporan baru (Create)
@@ -55,7 +99,6 @@ class DailyReportController extends Controller
             'keterangan' => 'nullable|string',
         ]);
 
-        // Otomatis ubah status kembali ke 'pending' jika laporan diedit oleh AO agar bisa diperiksa ulang oleh atasan
         $validated['status'] = 'pending';
 
         $report->update($validated);
@@ -80,30 +123,35 @@ class DailyReportController extends Controller
     }
 
     // =========================================================================
-    // FITUR EXPORT EXCEL BARU: Mengambil data berdasarkan tanggal inputan terbaru
+    // FITUR EXPORT EXCEL KHUSUS AO: Mendownload Laporan Milik Akun Sendiri Saja
     // =========================================================================
-    public function exportExcel()
+    public function exportExcelAO()
     {
-        // 1. Ambil 1 data laporan yang paling terakhir diinput untuk tahu tanggal terbarunya
-        $laporanTerbaru = DailyReport::latest()->first();
+        $namaAo = auth()->user()->name;
+        $namaFile = 'Laporan_Excel_AO_' . str_replace(' ', '_', $namaAo) . '.xlsx';
 
-        // 2. Jika database ternyata kosong, gunakan tanggal hari ini sebagai cadangan
-        $tanggalFilter = $laporanTerbaru ? $laporanTerbaru->tanggal_laporan : \Carbon\Carbon::today()->toDateString();
-
-        // 3. Nama file otomatis mengikuti tanggal data tersebut
-        $namaFile = 'Laporan_Harian_BJB_' . $tanggalFilter . '.xlsx';
-
-        // 4. Unduh Excel dengan melemparkan tanggal filter tersebut
-        return Excel::download(new ReportsExport($tanggalFilter), $namaFile);
+        return Excel::download(new ReportsExport(null, $namaAo), $namaFile);
     }
 
     // =========================================================================
-    // FUNGSI UTAMA BARU: Memproses perubahan status Approve / Reject dari Pemimpin
+    // FITUR EXPORT EXCEL PEMIMPIN: Mengambil seluruh data KCP berdasarkan tanggal terbaru
+    // =========================================================================
+    public function exportExcelPemimpin()
+    {
+        $laporanTerbaru = DailyReport::latest()->first();
+        $tanggalFilter = $laporanTerbaru ? $laporanTerbaru->tanggal_laporan : \Carbon\Carbon::today()->toDateString();
+        $namaFile = 'Laporan_Harian_BJB_KCP_' . $tanggalFilter . '.xlsx';
+
+        return Excel::download(new ReportsExport($tanggalFilter, null), $namaFile);
+    }
+
+    // =========================================================================
+    // FUNGSI UTAMA: Memproses perubahan status Approve / Reject dari Pemimpin
     // =========================================================================
     public function updateStatus(Request $request, $id)
     {
-        // Keamanan tingkat akhir: Tolak jika yang menembak link ini bukan pemimpin
-        if (auth()->user()->role !== 'pemimpin') {
+        // KOREKSI AMAN: Sesuaikan dengan string murni 'Pemimpin KCP' di database
+        if (auth()->user()->role !== 'Pemimpin KCP') {
             abort(403, 'Akses ditolak. Hanya Pemimpin KCP yang dapat memvalidasi laporan.');
         }
 
@@ -116,6 +164,7 @@ class DailyReportController extends Controller
             'status' => $request->status
         ]);
 
-        return redirect()->back()->with('success', 'Status validasi laporan berhasil diperbarui!');
+        return redirect()->back()
+            ->with('success', 'Status validasi laporan berhasil diperbarui!');
     }
 }

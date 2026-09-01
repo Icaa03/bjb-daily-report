@@ -21,8 +21,11 @@
                 <h1 class="display-4 fw-black mb-3 text-white" style="line-height: 1.2; font-weight: 800;">
                     Pantau & Validasi Kinerja KCP Lebih Mudah
                 </h1>
+                
                 <p class="lead opacity-75" style="font-size: 1.1rem;">
-                    Selamat datang di Aplikasi **bjb-daily-report**. Sistem integrasi data harian antara Account Officer (AO) dan Pemimpin KCP untuk efisiensi perbankan yang handal.
+                    Selamat datang di Aplikasi bjb-daily-report
+                    <br>
+                    Sistem integrasi data harian antara Account Officer (AO) dan Pemimpin KCP untuk efisiensi perbankan yang handal
                 </p>
             </div>
 
@@ -31,22 +34,22 @@
             </div>
         </div>
 
-        <div class="col-lg-5 d-flex align-items-center justify-content-center bg-light p-4 p-sm-5">
+        <div class="col-12 col-sm-10 col-md-8 col-lg-5 mx-auto d-flex flex-column align-items-center justify-content-center bg-light p-4 p-sm-5">
             <div class="w-100" style="max-width: 420px;">
                 
                 <div class="text-center d-lg-none mb-4">
                     <div class="bg-white d-inline-flex rounded-3 shadow-sm mb-3" 
                          style="width: 140px; height: 55px; overflow: hidden; position: relative; align-items: center; justify-content: center;">
                         <img src="{{ asset('images/logo-bjb.png.webp') }}" alt="Logo Bank BJB" 
-                             style="height: 100%; width: 100%; object-fit: contain; mix-blend-mode: multiply; transform: scale(1.5); image-rendering: -webkit-optimize-contrast;">
+                               style="height: 100%; width: 100%; object-fit: contain; mix-blend-mode: multiply; transform: scale(1.5); image-rendering: -webkit-optimize-contrast;">
                     </div>
                     <h4 class="fw-bold text-dark">Daily Report System</h4>
                 </div>
 
-                <div class="card border-0 shadow-lg rounded-4 p-4 p-sm-5 bg-white">
+                <div class="card border-0 shadow-lg rounded-4 p-4 p-sm-5 bg-white w-100">
                     <div class="mb-4">
                         <h3 class="fw-bold text-dark mb-1">Masuk Akun</h3>
-                        <p class="text-muted small">Silakan gunakan email resmi korporat Anda</p>
+                        <p class="text-muted small mb-0">Silakan gunakan email resmi korporat Anda</p>
                     </div>
 
                     <form method="POST" action="{{ route('login') }}">
@@ -105,7 +108,7 @@
 
                 @if (Route::has('register'))
                     <div class="text-center mt-4">
-                        <p class="small text-muted">Belum punya akses akun? <a href="{{ route('register') }}" class="fw-bold text-decoration-none" style="color: #0056a3;">Hubungi Admin</a></p>
+                        <p class="small text-muted mb-0">Belum punya akses akun? <a href="{{ route('register') }}" class="fw-bold text-decoration-none" style="color: #0056a3;">Hubungi Admin</a></p>
                     </div>
                 @endif
 
@@ -115,7 +118,7 @@
     </div>
 </div>
 
-<link class="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 <style>
     .btn:hover {
         background: #003d75 !important;

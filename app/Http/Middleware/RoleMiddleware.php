@@ -11,19 +11,29 @@ class RoleMiddleware
 {
     /**
      * Handle an incoming request.
-     *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
     public function handle(Request $request, Closure $next, string $role): Response
     {
-        // 1. Cek apakah user sudah login atau belum
+        // 1. Cek apakah user sudah login
         if (!Auth::check()) {
             return redirect('/login');
         }
 
-        // 2. Cek apakah role user sesuai dengan role yang diizinkan masuk halaman
-        if (Auth::user()->role !== $role) {
-            abort(403, 'Maaf Anisa, akun ini tidak memiliki hak akses untuk membuka halaman ini.');
+        $userRole = Auth::user()->role;
+
+        // 2. Bersihkan kedua string (Ubah ke huruf kecil semua & hapus spasi jika ada)
+        // Contoh: 'Pemimpin KCP' -> 'pemimpinkcp', 'pemimpin' -> 'pemimpin'
+        $cleanUserRole = strtolower(str_replace(' ', '', $userRole));
+        $cleanParamRole = strtolower(str_replace(' ', '', $role));
+
+        // 3. TOLERANSI TOTAL: Jika parameter rute adalah 'pemimpin' DAN role user di DB adalah 'pemimpinkcp'
+        if ($cleanParamRole === 'pemimpin' && $cleanUserRole === 'pemimpinkcp') {
+            return $next($request);
+        }
+
+        // Cek kecocokan murni setelah dibersihkan
+        if ($cleanUserRole !== $cleanParamRole) {
+            abort(403, 'AKSES DITOLAK. HANYA PEMIMPIN KCP YANG DAPAT MEMVALIDASI LAPORAN.');
         }
 
         return $next($request);

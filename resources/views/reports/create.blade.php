@@ -79,11 +79,11 @@
                                     <span class="input-group-text bg-light border-0 text-muted"><i class="bi bi-grid-1x2"></i></span>
                                     <select id="sektor" class="form-select bg-light border-0 p-2.5 @error('sektor') is-invalid @enderror" name="sektor" required style="font-size: 14px;">
                                         <option value="">-- Pilih Sektor --</option>
-                                        <option value="Konsumer" {{ old('sektor') == 'Konsumer' ? 'selected' : '' }}>Konsumer</option>
-                                        <option value="Ritel" {{ old('sektor') == 'Ritel' ? 'selected' : '' }}>Ritel</option>
-                                        <option value="Digi" {{ old('sektor') == 'Digi' ? 'selected' : '' }}>Digi</option>
-                                        <option value="Tabungan" {{ old('sektor') == 'Tabungan' ? 'selected' : '' }}>Tabungan</option>
-                                        <option value="ATM" {{ old('sektor') == 'ATM' ? 'selected' : '' }}>ATM</option>
+                                        <option value="Konsumer" {{ old('sektor', request('sektor')) == 'Konsumer' ? 'selected' : '' }}>Konsumer</option>
+                                        <option value="Ritel" {{ old('sektor', request('sektor')) == 'Ritel' ? 'selected' : '' }}>Ritel</option>
+                                        <option value="Digi" {{ old('sektor', request('sektor')) == 'Digi' ? 'selected' : '' }}>Digi</option>
+                                        <option value="Tabungan" {{ old('sektor', request('sektor')) == 'Tabungan' ? 'selected' : '' }}>Tabungan</option>
+                                        <option value="ATM" {{ old('sektor', request('sektor')) == 'ATM' ? 'selected' : '' }}>ATM</option>
                                     </select>
                                     @error('sektor')
                                         <span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>

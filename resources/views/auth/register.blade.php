@@ -38,7 +38,7 @@
                     <div class="bg-white d-inline-flex mb-3 shadow-sm rounded-3" 
                          style="width: 140px; height: 55px; overflow: hidden; position: relative; align-items: center; justify-content: center; padding-bottom: 4px;">
                         <img src="{{ asset('images/logo-bjb.png.webp') }}" alt="Logo Bank BJB" 
-                             style="height: 100%; width: 100%; object-fit: contain; mix-blend-mode: multiply; transform: scale(1.6); image-rendering: -webkit-optimize-contrast;">
+                               style="height: 100%; width: 100%; object-fit: contain; mix-blend-mode: multiply; transform: scale(1.6); image-rendering: -webkit-optimize-contrast;">
                     </div>
                     <h4 class="fw-bold text-dark">Registrasi Akun Baru</h4>
                 </div>
@@ -82,8 +82,9 @@
                                 <span class="input-group-text bg-light border-0 text-muted"><i class="bi bi-briefcase"></i></span>
                                 <select id="role" class="form-select bg-light border-0 p-2 @error('role') is-invalid @enderror" name="role" required style="font-size: 14px;">
                                     <option value="" disabled selected>-- Pilih Jabatan --</option>
-                                    <option value="ao" {{ old('role') == 'ao' ? 'selected' : '' }}>Account Officer (AO)</option>
-                                    <option value="pemimpin" {{ old('role') == 'pemimpin' ? 'selected' : '' }}>Pemimpin KCP</option>
+                                    <!-- VALUE JABATAN DISINKRONKAN DENGAN FORMAT HURUF DATABASE -->
+                                    <option value="AO" {{ old('role') == 'AO' ? 'selected' : '' }}>Account Officer (AO)</option>
+                                    <option value="Pemimpin KCP" {{ old('role') == 'Pemimpin KCP' ? 'selected' : '' }}>Pemimpin KCP</option>
                                 </select>
                                 @error('role')
                                     <span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>

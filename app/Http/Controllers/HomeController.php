@@ -4,49 +4,50 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Models\DailyReport;
+use App\Models\DailyReport; // IMPOR: Pastikan model DailyReport ini sudah dipanggil
 
 class HomeController extends Controller
 {
+    /**
+     * Create a new controller instance.
+     */
     public function __construct()
     {
-        // Kosong untuk mendukung struktur routing Laravel versi baru
+        // Sengaja dikosongkan untuk mendukung routing Laravel 12
     }
 
     /**
-     * Membaca role user setelah login, lalu melempar ke halaman masing-masing
+     * Jembatan Utama Pengalihan Sesaat Setelah Sukses Login
      */
     public function index()
     {
-        if (!Auth::check()) {
+        $user = Auth::user();
+
+        if (!$user) {
             return redirect()->route('login');
         }
 
-        $role = Auth::user()->role;
-
-        if ($role === 'ao') {
+        if ($user->role === 'AO') {
             return redirect()->route('reports.index');
-        }
-
-        if ($role === 'pemimpin') {
+        } 
+        
+        if ($user->role === 'Pemimpin KCP') {
             return redirect()->route('pemimpin.dashboard');
         }
 
         Auth::logout();
-        return redirect()->route('login')->with('error', 'Role pengguna tidak dikenali.');
+        return redirect()->route('login')->with('error', 'Jabatan akun tidak dikenali oleh sistem.');
     }
 
     /**
-     * Menampilkan Halaman Dasbor Pemimpin KCP beserta data laporan harian
+     * Halaman Dashboard Utama Khusus Pemimpin KCP (SUDAH DIPERBAIKI)
      */
     public function pemimpinIndex()
     {
-        // Mengambil semua data laporan, diurutkan dari yang paling baru
+        // 1. Ambil semua data laporan dari database, urutkan dari yang paling baru
         $reports = DailyReport::latest()->get();
 
-        // Menghitung total laporan yang terkumpul di database
-        $totalLaporan = $reports->count();
-
-        return view('pemimpin.dashboard', compact('reports', 'totalLaporan')); 
+        // 2. Kirim variabel $reports ke dalam view pemimpin/dashboard.blade.php
+        return view('pemimpin.dashboard', compact('reports'));
     }
 }
